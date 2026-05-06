@@ -118,36 +118,6 @@ Nhóm xây dựng **Core Business** – dịch vụ xử lý nghiệp vụ trung
 
 ## 8. Sơ đồ minh họa
 
-```mermaid
-flowchart LR
-    SV[👨‍🎓 Sinh viên] --> GW[API Gateway]
-    GV[👨‍🏫 Giảng viên] --> GW
-    NV[👷 Nhân viên vận hành] --> GW
-    Admin[🔧 Quản trị viên] --> GW
-
-    GW --> CB[🏢 Core Business\nXử lý nghiệp vụ trung tâm]
-
-    CB --> DB[(📦 Database\nPostgreSQL)]
-    CB --> MQ[📨 Message Queue\nRabbitMQ]
-
-    CB <--> AG[🚪 Access Gate]
-    CB --> NT[🔔 Notification]
-    CB <--> AN[📊 Analytics]
-
-    IoT[📡 Thiết bị IoT] --> IN[📡 IoT Ingestion]
-    CAM[📹 Camera] --> CS[📹 Camera Stream]
-    
-    IN --> AN
-    CS --> AIV[👁️ AI Vision]
-    
-    AIV --> CB
-    AN --> CB
-
-    MQ --> NT
-
-    subgraph Platform
-        DB
-        MQ
-        MON[📈 Monitoring]
-    end
+```markdown
+![Service Boundary Diagram](./service-boundary-diagram.png)
 ```
