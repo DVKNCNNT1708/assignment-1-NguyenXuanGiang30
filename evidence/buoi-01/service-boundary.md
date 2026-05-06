@@ -5,8 +5,8 @@
 - Tên nhóm:
 - Lớp:
 - Thành viên:
-- Service nhóm phụ trách: **Core Service** – Dịch vụ xử lý nghiệp vụ trung tâm
-- Sản phẩm tổng thể của lớp: Nền tảng mô phỏng hệ thống vận hành thông minh trong khuôn viên trường đại học (Smart Campus Operations Platform)
+- Service nhóm phụ trách: **Core Business** – Dịch vụ xử lý nghiệp vụ trung tâm
+- Sản phẩm tổng thể của lớp: Nền tảng mô phỏng hệ thống vận hành thông minh trong khuôn viên trường đại học (Product A)
 
 ## 2. Actor
 
@@ -23,7 +23,7 @@ Các tác nhân tương tác với hệ thống/service:
 
 ## 3. System Boundary
 
-Nhóm xây dựng **Core Service** – dịch vụ xử lý nghiệp vụ trung tâm, đóng vai trò điều phối và xử lý logic nghiệp vụ chính của toàn bộ nền tảng Smart Campus.
+Nhóm xây dựng **Core Business** – dịch vụ xử lý nghiệp vụ trung tâm, đóng vai trò điều phối và xử lý logic nghiệp vụ chính của toàn bộ nền tảng Product A.
 
 **Phần nhóm kiểm soát (xây dựng trực tiếp):**
 
@@ -36,9 +36,9 @@ Nhóm xây dựng **Core Service** – dịch vụ xử lý nghiệp vụ trung 
 
 **Phần nhóm chỉ tích hợp (sử dụng từ service khác):**
 
-- Xác thực & phân quyền người dùng (từ User Service / Authentication Service)
-- Gửi thông báo đến người dùng (từ Notification Service)
-- Thu thập & phân tích dữ liệu cảm biến IoT (từ Analytics Service)
+- Xác thực, kiểm soát ra vào (từ Access Gate)
+- Gửi thông báo đến người dùng (từ Notification)
+- Thu thập & phân tích dữ liệu IoT, camera (từ IoT Ingestion, Analytics, Camera Stream, AI Vision)
 - Lưu trữ dữ liệu (Database / Storage Platform)
 - Giám sát & logging (Monitoring Platform)
 
@@ -55,9 +55,9 @@ Nhóm xây dựng **Core Service** – dịch vụ xử lý nghiệp vụ trung 
 
 **Service KHÔNG làm:**
 
-- Không xử lý xác thực / đăng nhập người dùng (thuộc User Service)
-- Không gửi trực tiếp email / push notification (thuộc Notification Service)
-- Không thu thập hoặc xử lý dữ liệu thô từ cảm biến IoT (thuộc Analytics / IoT Service)
+- Không xử lý kiểm soát ra/vào trực tiếp (thuộc Access Gate)
+- Không gửi trực tiếp email / push notification (thuộc Notification)
+- Không thu thập hoặc xử lý dữ liệu thô từ IoT/Camera (thuộc IoT Ingestion / Camera Stream / Analytics)
 - Không render giao diện người dùng (thuộc Frontend)
 - Không quản lý hạ tầng container / cloud (thuộc Platform team)
 
@@ -67,15 +67,15 @@ Nhóm xây dựng **Core Service** – dịch vụ xử lý nghiệp vụ trung 
 
 - Yêu cầu đặt phòng học / phòng họp từ sinh viên, giảng viên (qua API Gateway)
 - Yêu cầu bảo trì, báo cáo sự cố từ nhân viên vận hành
-- Sự kiện cảnh báo từ Analytics Service (nhiệt độ vượt ngưỡng, thiết bị hỏng)
-- Thông tin người dùng đã xác thực từ User Service (JWT token)
+- Sự kiện cảnh báo từ Analytics / AI Vision (nhiệt độ vượt ngưỡng, bất thường)
+- Thông tin người dùng đã xác thực từ Access Gate / Auth Provider
 - Dữ liệu cấu hình vận hành từ quản trị viên
 
 ### Output
 
 - Xác nhận / từ chối yêu cầu đặt phòng (kèm lý do)
 - Phiếu bảo trì được tạo, cập nhật trạng thái (mới → đang xử lý → hoàn thành)
-- Sự kiện nghiệp vụ phát ra message queue (để Notification Service gửi thông báo)
+- Sự kiện nghiệp vụ phát ra message queue (để Notification gửi thông báo)
 - Dữ liệu trạng thái tài nguyên real-time cho Dashboard
 - Báo cáo tổng hợp vận hành (thống kê đặt phòng, bảo trì, sử dụng tài nguyên)
 
@@ -104,44 +104,20 @@ Nhóm xây dựng **Core Service** – dịch vụ xử lý nghiệp vụ trung 
 
 | Service | Mục đích gọi |
 |---|---|
-| **User Service** | Lấy thông tin người dùng, kiểm tra quyền truy cập |
-| **Notification Service** | Gửi yêu cầu thông báo (đặt phòng thành công, cảnh báo bảo trì) |
-| **Analytics Service** | Truy vấn dữ liệu cảm biến, báo cáo phân tích |
+| **Access Gate** | Xác thực thông tin người dùng, kiểm soát ra/vào |
+| **Notification** | Gửi yêu cầu thông báo (đặt phòng thành công, cảnh báo bảo trì) |
+| **Analytics** | Truy vấn dữ liệu phân tích, báo cáo hệ thống |
 
 **Service nào gọi đến service này?**
 
 | Service | Mục đích gọi |
 |---|---|
-| **API Gateway** | Chuyển tiếp request từ frontend đến Core Service |
-| **Analytics Service** | Gửi cảnh báo khi phát hiện bất thường từ dữ liệu IoT |
-| **User Service** | Kiểm tra tài nguyên liên quan khi quản lý người dùng |
+| **API Gateway** | Chuyển tiếp request từ frontend đến Core Business |
+| **Analytics / AI Vision** | Gửi cảnh báo khi phát hiện bất thường từ dữ liệu IoT/Camera |
+| **Access Gate** | Kiểm tra trạng thái tài nguyên/phòng khi cấp quyền ra/vào |
 
 ## 8. Sơ đồ minh họa
 
-```mermaid
-flowchart LR
-    SV[👨‍🎓 Sinh viên] --> GW[API Gateway]
-    GV[👨‍🏫 Giảng viên] --> GW
-    NV[👷 Nhân viên vận hành] --> GW
-    Admin[🔧 Quản trị viên] --> GW
-
-    GW --> CS[🏢 Core Service\nXử lý nghiệp vụ trung tâm]
-
-    CS --> DB[(📦 Database\nPostgreSQL)]
-    CS --> MQ[📨 Message Queue\nRabbitMQ]
-
-    CS <--> US[👤 User Service]
-    CS --> NS[🔔 Notification Service]
-    CS <--> AS[📊 Analytics Service]
-
-    IoT[📡 Thiết bị IoT] --> AS
-    AS --> CS
-
-    MQ --> NS
-
-    subgraph Platform
-        DB
-        MQ
-        MON[📈 Monitoring]
-    end
+```markdown
+![Service Boundary Diagram](./service-boundary-diagram.png)
 ```
