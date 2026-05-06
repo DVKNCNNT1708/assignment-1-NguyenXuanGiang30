@@ -118,6 +118,4 @@ Nhóm xây dựng **Core Business** – dịch vụ xử lý nghiệp vụ trung
 
 ## 8. Sơ đồ minh họa
 
-```markdown
 ![Service Boundary Diagram](./service-boundary-diagram.png)
-```
