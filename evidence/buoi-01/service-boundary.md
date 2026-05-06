@@ -2,9 +2,9 @@
 
 ## 1. Thông tin nhóm
 
-- Tên nhóm:
-- Lớp:
-- Thành viên:
+- Tên nhóm: Nhóm 6
+- Lớp: CNTT 17-08
+- Thành viên: Nguyễn Xuân Giang, Đỗ Văn Tuyên
 - Service nhóm phụ trách: **Core Business** – Dịch vụ xử lý nghiệp vụ trung tâm
 - Sản phẩm tổng thể của lớp: Nền tảng mô phỏng hệ thống vận hành thông minh trong khuôn viên trường đại học (Product A)
 
